@@ -100,7 +100,6 @@ messages.append(
     {'role': 'system', 'content': 'create a json summary of the previous conversation. \
 The fields should be 1) car name 2) manufacturer name 3) leasing yes/no 4) price or monthly leasing rate'},
 )
-# The fields should be 1) pizza, price 2) list of toppings 3) list of drinks, include size include price  4) list of sides include size include price, 5)total price '},
 
 response = get_completion_from_messages(messages, temperature=0)
 print(response)
