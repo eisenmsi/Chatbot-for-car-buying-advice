@@ -3,7 +3,7 @@
 import openai
 import panel as pn  # GUI
 
-openai.api_key = ""  # insert your openai.api_key
+openai.api_key = "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"  # insert your openai.api_key
 
 
 # Some functions to interact with chatGPT
