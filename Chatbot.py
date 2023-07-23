@@ -3,10 +3,11 @@
 import openai
 import panel as pn  # GUI
 
-openai.api_key = "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"  # insert your openai.api_key
+openai.api_key = "key"  # insert your openai.api_key
 
 
 # Some functions to interact with chatGPT
+
 
 def get_completion(prompt, model="gpt-3.5-turbo"):
     messages = [{"role": "user", "content": prompt}]
@@ -30,14 +31,19 @@ def get_completion_from_messages(messages, model="gpt-3.5-turbo", temperature=0)
 
 def collect_messages(_):
     prompt = inp.value_input
-    inp.value = ''
-    context.append({'role': 'user', 'content': f"{prompt}"})
+    inp.value = ""
+    context.append({"role": "user", "content": f"{prompt}"})
     response = get_completion_from_messages(context)
-    context.append({'role': 'assistant', 'content': f"{response}"})
+    context.append({"role": "assistant", "content": f"{response}"})
+    panels.append(pn.Row("User:", pn.pane.Markdown(prompt, width=600)))
     panels.append(
-        pn.Row('User:', pn.pane.Markdown(prompt, width=600)))
-    panels.append(
-        pn.Row('Assistant:', pn.pane.Markdown(response, width=600, style={'background-color': '#F6F6F6'})))
+        pn.Row(
+            "Assistant:",
+            pn.pane.Markdown(
+                response, width=600, styles={"background-color": "#F6F6F6"}
+            ),
+        )
+    )
 
     return pn.Column(*panels)
 
@@ -46,14 +52,18 @@ pn.extension()
 
 panels = []  # collect display
 
-context = [{'role': 'system', 'content': """
+context = [
+    {
+        "role": "system",
+        "content": """
 You are OrderBot, an automated service to collect order for a car and you and you give advice on buying a car. \
 You first greet the customer, then you ask if he wants to buy or lease a car, \
 and then you ask how high the price may be, respectively the leasing rate. \
 Also ask what type of propulsion is wanted and if there are any other wishes. \
+Then ask for the desired manufacturer. \
 You wait to collect the entire information, then summarize it and check for a final \
 time if the customer wants to add anything else. \
-Then you suggest suitable cars and together with the customer you find the most suitable car. \
+Then you suggest all suitable cars and together with the customer you find the most suitable car. \
 You respond in a short, very conversational friendly style. \
 Here are the possible cars listed: \
 
@@ -78,9 +88,11 @@ BMW 840i Coupé: (Manufacturer: BMW, propulsion: fuel, power: 333 PS, price:
 IONIQ 5: (Manufacturer: Hyundai, propulsion: electric, price: 43900 \
 
 Golf: (Manufacturer: VW, propulsion: fuel, price: 31145) \
-"""}]  # more cars must be added
+""",
+    }
+]  # more cars must be added
 
-inp = pn.widgets.TextInput(value="Hi", placeholder='Enter text here…')
+inp = pn.widgets.TextInput(value="Hi", placeholder="Enter text here…")
 button_conversation = pn.widgets.Button(name="Chat!")
 
 interactive_conversation = pn.bind(collect_messages, button_conversation)
@@ -91,14 +103,18 @@ dashboard = pn.Column(
     pn.panel(interactive_conversation, loading_indicator=True, height=300),
 )
 
-display(dashboard)
+# Start the Panel server and display the dashboard
+dashboard.show()
 
 # Create summary
 
 messages = context.copy()
 messages.append(
-    {'role': 'system', 'content': 'create a json summary of the previous conversation. \
-The fields should be 1) car name 2) manufacturer name 3) leasing yes/no 4) price or monthly leasing rate'},
+    {
+        "role": "system",
+        "content": "create a json summary of the previous conversation. \
+The fields should be 1) car name 2) manufacturer name 3) leasing yes/no 4) price or monthly leasing rate",
+    },
 )
 
 response = get_completion_from_messages(messages, temperature=0)
