@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "chatbot-for-car-buying-advice"
+version = "0.1.0"
+description = ""
+authors = ["Simon Eisenmann <simon.eisenmann98@web.de>"]
+readme = "README.md"
+packages = [{include = "chatbot_for_car_buying_advice"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+openai = "^0.27.8"
+panel = "^1.2.0"
+jupyter-bokeh = "^3.0.7"
+notebook = "^7.0.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.24.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
